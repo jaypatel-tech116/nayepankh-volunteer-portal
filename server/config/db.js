@@ -1,13 +1,11 @@
-const mockDb = require('../utils/mockDb');
+const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    console.log('ℹ️ Server Offline Mock Mode: Initializing JSON database...');
-    // Seed default admin account in the mock database
-    await mockDb.seedAdmin();
-    console.log('✅ Mock Database Initialized: d:\\VS CODE\\NAYEPANKH FOUNDATION\\nayepankh-volunteer-system\\server\\data.json');
+    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error(`❌ Mock database initialization failed: ${error.message}`);
+    console.error(`❌ MongoDB Connection Failed: ${error.message}`);
     process.exit(1);
   }
 };
