@@ -1,7 +1,5 @@
-const mockDb = require('../utils/mockDb');
+const mongoose = require('mongoose');
 
-// Volunteer schema definition kept for documentation purposes
-/*
 const volunteerSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   fullName: { type: String, required: true },
@@ -20,10 +18,16 @@ const volunteerSchema = new mongoose.Schema({
   githubUrl: { type: String, default: '' },
   status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   adminNote: { type: String, default: '' },
-  statusHistory: [...],
+  statusHistory: [
+    {
+      status: { type: String, enum: ['pending', 'approved', 'rejected'] },
+      note: { type: String, default: '' },
+      changedAt: { type: Date, default: Date.now },
+      changedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    }
+  ],
   registeredAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
-*/
 
-module.exports = mockDb.Volunteer;
+module.exports = mongoose.model('Volunteer', volunteerSchema);
