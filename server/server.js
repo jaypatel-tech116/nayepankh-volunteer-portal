@@ -18,11 +18,24 @@ const app = express();
 // CORS
 const allowedOrigins = process.env.CLIENT_URL
   ? process.env.CLIENT_URL.split(',').map(o => o.trim())
-  : ['http://localhost:5173', 'http://localhost:5174'];
+  : [];
+
+// Add default local origins
+allowedOrigins.push('http://localhost:5173', 'http://localhost:5174');
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+    // Allow requests with no origin (like mobile apps, postman, curl)
+    if (!origin) return callback(null, true);
+
+    const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+    const isVercel = origin.endsWith('.vercel.app');
+    const isExplicitlyAllowed = allowedOrigins.some(allowed => {
+      if (allowed === '*') return true;
+      return allowed.toLowerCase() === origin.toLowerCase();
+    });
+
+    if (isExplicitlyAllowed || isLocalhost || isVercel) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
